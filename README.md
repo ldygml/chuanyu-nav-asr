@@ -49,13 +49,15 @@ pip install -r requirements.txt
 
 ## 模型权重
 
-权重文件较大（约 3.8 GB），托管在 Hugging Face：
+权重文件较大（约 3.8 GB），托管在 Hugging Face：[999ffgml/chuanyu-nav-asr](https://huggingface.co/999ffgml/chuanyu-nav-asr)
 
 ```bash
 # 下载模型 + 词典到 weights/
 pip install huggingface_hub
-huggingface-cli download <HF用户名>/chuanyu-nav-asr --local-dir weights
+hf download 999ffgml/chuanyu-nav-asr --local-dir weights
 ```
+
+> 国内网络可先执行 `export HF_ENDPOINT=https://hf-mirror.com`（镜像加速）再下载。
 
 ```
 weights/
