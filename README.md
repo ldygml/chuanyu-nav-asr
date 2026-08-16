@@ -5,7 +5,7 @@
 - **比赛**：CCF IVC 2026 智能导航方言语音识别挑战赛（川渝方言导航语音）
 - **成绩**：初赛第 14 名（A 榜纯模型基线 CER = 6.68%，热词后处理版提交）
 - **模型**：Data2Vec 2.0 编码器 + CTC，导航数据增强 + 多段续训（nav80k → nav80k_cont）
-- **仓库**：完整推理代码 + fairseq + 热词后处理 + 训练脚本 + 环境清单 + 学习笔记（权重在 Hugging Face）
+- **仓库**：完整推理代码 + fairseq + 热词后处理 + 训练脚本 + 环境清单（权重在 Hugging Face）
 
 ---
 
@@ -13,17 +13,15 @@
 
 ```
 ├── transcribe.sh          # ★通用转写工具：wav/目录 → 文字，一条命令
-├── hotword_fix.py         # 热词后处理（纯字典替换，557 对词典）
-├── 词典/                  # 热词词典（hotword_dict_final.md 等）
+├── hotword_fix.py         # 热词后处理（纯字典替换，1981 对词典）
+├── 词典/                  # 热词词典（hotword_dict_final.md，合并去重版）
 ├── src/                   # ASR 代码（data2vec_dialect：模型/任务/推理三件套）
 ├── fairseq/               # fairseq 源码（本项目依赖的版本）
 ├── scripts/               # 训练/推理脚本（含 nav80k_cont 续训命令）
 ├── docs/                  # 方案文档、环境配置文档、数据集制作流程等
 ├── dict.chr7531.txt       # 字符词典（7531 字）
 ├── requirements.txt       # 环境依赖清单（与训练服务器一致）
-├── PIPELINE说明.md        # 完整 pipeline 说明（竞赛内部文档）
-├── 学习内容/              # 技术学习笔记（CTC/MFCC/data2vec/热词与纠错等）
-└── 每日工作/              # 竞赛全程工作日志
+└── PIPELINE说明.md        # 完整 pipeline 说明（训练路线/推理流程/热词后处理）
 ```
 
 ---
@@ -82,7 +80,7 @@ bash transcribe.sh --input audio.wav --no-hotword --device cuda:1
 
 - 输入：任意采样率、任意声道数的 WAV（自动重采样 16k 单声道）
 - 输出：stdout 打印 `id<TAB>文字`；`--output` 同时写 jsonl（`{"id","text"}`）
-- 热词修正默认开启（`词典/hotword_dict_final.md`，557 对）；`--no-hotword` 跳过
+- 热词修正默认开启（`词典/hotword_dict_final.md`，1981 对）；`--no-hotword` 跳过
 - 环境变量：`NAV_ASR_CKPT`（权重路径，默认 `weights/model.pt`）、`NAV_ASR_PYTHON`（解释器）
 
 ### 底层推理三步（等价操作）
@@ -116,13 +114,7 @@ nav80k 续训        6.68%     原参数续训 20k（A 榜 CER，两次推理逐
 
 - 方案：**纯字典替换**（按错词长度降序 find 替换 + 子串防护 + REVERT_SET + 上下文例外），比音素模糊匹配（asr-hotword）可控得多
 - 词典来源：全部为测试集之外的外部地名/机构名资料与常识整理
-- 原理与迭代历程详见 `学习内容/热词后处理与纠错/README.md`
-
----
-
-## 学习笔记
-
-`学习内容/` 收录了全程技术笔记：CTC 讲解、MFCC 讲解、data2vec 讲解、冻结微调策略、多段续训策略、数据增强策略、推理流程说明、技术栈、比赛评测体系、**热词后处理与 FastCorrect 纠错**、预训练与微调机制详解。
+- 原理与迭代历程详见 `PIPELINE说明.md` 第 4 节
 
 ## 致谢
 

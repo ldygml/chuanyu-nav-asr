@@ -43,3 +43,11 @@ _tmp*
 # 本地 Claude 配置与根目录临时 json
 .claude/
 /*.json
+
+# 根目录内部工作文件（勿入库）
+/diff_judged_vs_desktop.md
+/审查清单.md
+/热词复查报告.md
+/竞赛要求与赛题说明.md
+/预测审查报告.md
+*.bak2

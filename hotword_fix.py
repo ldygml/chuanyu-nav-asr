@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hotword correction driven by the approved dictionary (human_correct.md):
+"""Hotword correction driven by the approved dictionary (词典/hotword_dict_final.md):
    replace EVERY occurrence of each 错->对 pair in the text, subject to the
    substring-damage guard (a lengthening replacement touching a hanzi neighbor
    is skipped at that occurrence). REVERT_SET pairs are skipped entirely.
