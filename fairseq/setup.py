@@ -80,8 +80,11 @@ extensions = [
 ]
 
 
+# 跳过源码不在本仓库中的扩展（如 examples/operators/*，发布时已精简），
+# 避免 build_ext 因缺文件中断——推理只需 data_utils_fast 等核心扩展。
 extensions.extend(
-    [
+    ext
+    for ext in [
         cpp_extension.CppExtension(
             "fairseq.libbase",
             sources=[
@@ -101,10 +104,12 @@ extensions.extend(
             ],
         ),
     ]
+    if all(os.path.exists(s) for s in ext.sources)
 )
 if "CUDA_HOME" in os.environ:
     extensions.extend(
-        [
+        ext
+        for ext in [
             cpp_extension.CppExtension(
                 "fairseq.libnat_cuda",
                 sources=[
@@ -127,6 +132,7 @@ if "CUDA_HOME" in os.environ:
                 ],
             ),
         ]
+        if all(os.path.exists(s) for s in ext.sources)
     )
 
 cmdclass = {"build_ext": cpp_extension.BuildExtension}

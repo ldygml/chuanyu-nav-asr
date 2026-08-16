@@ -27,7 +27,7 @@ class CosineLRScheduleConfig(FairseqDataclass):
         },
     )
     lr: List[float] = field(
-        default=II("optimization.lr"),
+        default_factory=lambda: II("optimization.lr"),
         metadata={"help": "max learning rate, must be more than cfg.min_lr"},
     )
     min_lr: float = field(default=0.0, metadata={"help": "min learning rate"})
@@ -41,7 +41,7 @@ class CosineLRScheduleConfig(FairseqDataclass):
         default=0.1, metadata={"help": "shrink factor for annealing"}
     )
     # This is not required, but is for convenience in inferring lr_period_updates
-    max_update: int = II("optimization.max_update")
+    max_update: int = field(default_factory=lambda: II("optimization.max_update"))
 
 
 @register_lr_scheduler("cosine", dataclass=CosineLRScheduleConfig)

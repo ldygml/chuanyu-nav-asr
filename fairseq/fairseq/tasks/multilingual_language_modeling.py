@@ -135,16 +135,14 @@ class MultilingualLanguageModelingConfig(FairseqDataclass):
         },
     )
     # TODO common vars below add to parent
-    seed: int = II("common.seed")
-    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
-        "dataset.dataset_impl"
-    )
-    data_buffer_size: int = II("dataset.data_buffer_size")
-    tpu: bool = II("common.tpu")
-    batch_size: Optional[int] = II("dataset.batch_size")
-    batch_size_valid: Optional[int] = II("dataset.batch_size_valid")
-    train_subset: str = II("common.train_subset")
-    valid_subset: str = II("common.valid_subset")
+    seed: int = field(default_factory=lambda: II("common.seed"))
+    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = field(default_factory=lambda: II("dataset.dataset_impl"))
+    data_buffer_size: int = field(default_factory=lambda: II("dataset.data_buffer_size"))
+    tpu: bool = field(default_factory=lambda: II("common.tpu"))
+    batch_size: Optional[int] = field(default_factory=lambda: II("dataset.batch_size"))
+    batch_size_valid: Optional[int] = field(default_factory=lambda: II("dataset.batch_size_valid"))
+    train_subset: str = field(default_factory=lambda: II("common.train_subset"))
+    valid_subset: str = field(default_factory=lambda: II("common.valid_subset"))
 
 
 @register_task(

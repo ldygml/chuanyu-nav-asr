@@ -28,7 +28,7 @@ class CtcCriterionConfig(FairseqDataclass):
         default=False,
         metadata={"help": "zero inf loss when source length <= target length"},
     )
-    sentence_avg: bool = II("optimization.sentence_avg")
+    sentence_avg: bool = field(default_factory=lambda: II("optimization.sentence_avg"))
     post_process: str = field(
         default="letter",
         metadata={

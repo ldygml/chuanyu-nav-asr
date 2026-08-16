@@ -15,13 +15,18 @@ import argparse
 import json
 import os
 import kaldiio
+import numpy as np
+import soundfile as sf
 import torch
 import torchaudio
 
 
 def extract_mfcc(wav_path: str):
     """从 16kHz WAV 提取 40 维 MFCC，返回 (T, 40) float32 numpy array."""
-    waveform, sr = torchaudio.load(wav_path)
+    wav, sr = sf.read(wav_path, dtype="float32")
+    if wav.ndim == 1:
+        wav = wav[:, None]
+    waveform = torch.from_numpy(wav.T)
     if sr != 16000:
         waveform = torchaudio.functional.resample(waveform, sr, 16000)
     if waveform.shape[0] > 1:

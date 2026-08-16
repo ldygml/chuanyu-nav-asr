@@ -47,7 +47,7 @@ class FairseqCPUAdamConfig(FairseqDataclass):
         default=False, metadata={"help": "use FP16 stats (with automatic scaling)"}
     )
     # TODO common vars below in parent
-    lr: List[float] = II("optimization.lr")
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_optimizer("cpu_adam", dataclass=FairseqCPUAdamConfig)

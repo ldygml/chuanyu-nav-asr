@@ -10,7 +10,8 @@ import sys
 
 from typing import Optional, List
 from dataclasses import dataclass, field
-from omegaconf import MISSING, II
+from omegaconf import II
+MISSING = "???"
 
 from fairseq.data import SubsampleDataset
 from fairseq.dataclass import FairseqDataclass
@@ -27,13 +28,13 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ImageMaskingConfig:
-    patch_size: int = II("model.modalities.image.patch_size")
-    mask_prob: float = II("model.modalities.image.mask_prob")
-    mask_prob_adjust: float = II("model.modalities.image.mask_prob_adjust")
-    mask_length: int = II("model.modalities.image.mask_length")
-    inverse_mask: bool = II("model.modalities.image.inverse_mask")
-    mask_dropout: float = II("model.modalities.image.mask_dropout")
-    clone_batch: int = II("model.clone_batch")
+    patch_size: int = field(default_factory=lambda: II("model.modalities.image.patch_size"))
+    mask_prob: float = field(default_factory=lambda: II("model.modalities.image.mask_prob"))
+    mask_prob_adjust: float = field(default_factory=lambda: II("model.modalities.image.mask_prob_adjust"))
+    mask_length: int = field(default_factory=lambda: II("model.modalities.image.mask_length"))
+    inverse_mask: bool = field(default_factory=lambda: II("model.modalities.image.inverse_mask"))
+    mask_dropout: float = field(default_factory=lambda: II("model.modalities.image.mask_dropout"))
+    clone_batch: int = field(default_factory=lambda: II("model.clone_batch"))
     expand_adjacent: bool = False
     non_overlapping: bool = False
 
@@ -55,7 +56,7 @@ class MaeImagePretrainingConfig(FairseqDataclass):
     precompute_mask_config: Optional[ImageMaskingConfig] = None
 
     subsample: float = 1
-    seed: int = II("common.seed")
+    seed: int = field(default_factory=lambda: II("common.seed"))
     dataset_type: str = "imagefolder"
 
 

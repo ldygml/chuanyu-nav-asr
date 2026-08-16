@@ -7,7 +7,7 @@
 
 import sys
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, List
 from omegaconf import II
 
@@ -36,9 +36,9 @@ class MultimodalPretrainingConfig(FairseqDataclass):
     image_ratio: float = 1
     text_ratio: float = 1
 
-    max_tokens: Optional[int] = II("dataset.max_tokens")
-    batch_size: Optional[int] = II("dataset.batch_size")
-    update_freq: List[int] = II("optimization.update_freq")
+    max_tokens: Optional[int] = field(default_factory=lambda: II("dataset.max_tokens"))
+    batch_size: Optional[int] = field(default_factory=lambda: II("dataset.batch_size"))
+    update_freq: List[int] = field(default_factory=lambda: II("optimization.update_freq"))
 
     rebuild_batches: bool = True
 

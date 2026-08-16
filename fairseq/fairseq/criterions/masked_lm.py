@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import math
 from omegaconf import II
 
@@ -16,7 +16,7 @@ from fairseq.dataclass import FairseqDataclass
 
 @dataclass
 class MaskedLmConfig(FairseqDataclass):
-    tpu: bool = II("common.tpu")
+    tpu: bool = field(default_factory=lambda: II("common.tpu"))
 
 
 @register_criterion("masked_lm", dataclass=MaskedLmConfig)

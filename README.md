@@ -28,6 +28,10 @@
 
 ### 1. 安装环境
 
+支持两种环境（依赖版本由 pip 按 Python 版本自动解析，均实测可跑通推理）：
+
+**路线 A：Python 3.8 + CUDA 11.7**（旧显卡/旧驱动）
+
 ```bash
 conda create -n chuanyu-ASR python=3.8 -y && conda activate chuanyu-ASR
 
@@ -37,7 +41,24 @@ pip install torch==1.13.0+cu117 torchaudio==0.13.0+cu117 torchvision==0.14.0+cu1
 pip install -r requirements.txt
 ```
 
+**路线 B：Python 3.10+ + torch 2.x**（新机器/新驱动，或使用机器预装 torch）
+
+```bash
+conda create -n chuanyu-ASR python=3.10 -y && conda activate chuanyu-ASR
+
+pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+pip install -r requirements.txt
+```
+
+两条路线最后都要编译 fairseq 的 Cython 扩展：
+
+```bash
+cd fairseq && python setup.py build_ext --inplace && cd ..
+```
+
 > 国内网络 pip 可加 `-i https://pypi.tuna.tsinghua.edu.cn/simple`
+> 路线 B 实测环境：Python 3.12 + torch 2.12（RTX 4090）
 
 ### 2. 下载模型权重
 

@@ -25,7 +25,7 @@ class InverseSquareRootLRScheduleConfig(FairseqDataclass):
             "help": "initial learning rate during warmup phase; default is cfg.lr"
         },
     )
-    lr: List[float] = II("optimization.lr")
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_lr_scheduler("inverse_sqrt", dataclass=InverseSquareRootLRScheduleConfig)

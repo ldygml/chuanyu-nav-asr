@@ -16,7 +16,7 @@ from omegaconf import II
 
 @dataclass
 class SpeechDLMCriterionConfig(FairseqDataclass):
-    sentence_avg: bool = II("optimization.sentence_avg")
+    sentence_avg: bool = field(default_factory=lambda: II("optimization.sentence_avg"))
     main_and_cross_weights: Optional[str] = field(
         default="1,0",
         metadata={

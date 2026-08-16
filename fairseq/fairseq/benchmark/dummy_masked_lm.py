@@ -29,9 +29,9 @@ class DummyMaskedLMConfig(FairseqDataclass):
             " segments per sample for BERT dataset"
         },
     )
-    batch_size: Optional[int] = II("dataset.batch_size")
-    max_tokens: Optional[int] = II("dataset.max_tokens")
-    max_target_positions: int = II("task.tokens_per_sample")
+    batch_size: Optional[int] = field(default_factory=lambda: II("dataset.batch_size"))
+    max_tokens: Optional[int] = field(default_factory=lambda: II("dataset.max_tokens"))
+    max_target_positions: int = field(default_factory=lambda: II("task.tokens_per_sample"))
 
 
 @register_task("dummy_masked_lm", dataclass=DummyMaskedLMConfig)

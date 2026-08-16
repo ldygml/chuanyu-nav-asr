@@ -7,7 +7,8 @@
 
 from concurrent.futures import ThreadPoolExecutor
 import logging
-from omegaconf import MISSING
+MISSING = "???"
+MISSING = "???"
 import os
 import torch
 from typing import Optional

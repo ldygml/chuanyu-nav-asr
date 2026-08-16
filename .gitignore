@@ -4,7 +4,8 @@ id_rsa.pub
 *.pem
 
 # ===== 大数据 / 测试数据（不入 git） =====
-models/
+# 仅忽略根目录 models/（旧权重目录）；不能用裸 "models/" —— 会误伤 src/models、fairseq/**/models 等源码目录
+/models/
 初赛测试集/
 决赛材料/
 Sichuan Dialect Scripted Speech Corpus.zip
@@ -30,6 +31,11 @@ __pycache__/
 _tmp*
 *.log
 .cache/
+
+# ===== 编译产物 =====
+build/
+*.so
+*.cpp.orig
 
 # ===== 根目录临时文件（白名单见下） =====
 /*.py

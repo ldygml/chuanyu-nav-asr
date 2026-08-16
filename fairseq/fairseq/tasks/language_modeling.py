@@ -94,16 +94,14 @@ class LanguageModelingConfig(FairseqDataclass):
     )
 
     # TODO common vars below add to parent
-    seed: int = II("common.seed")
-    batch_size: Optional[int] = II("dataset.batch_size")
-    batch_size_valid: Optional[int] = II("dataset.batch_size_valid")
-    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
-        "dataset.dataset_impl"
-    )
-    data_buffer_size: int = II("dataset.data_buffer_size")
-    tpu: bool = II("common.tpu")
-    use_plasma_view: bool = II("common.use_plasma_view")
-    plasma_path: str = II("common.plasma_path")
+    seed: int = field(default_factory=lambda: II("common.seed"))
+    batch_size: Optional[int] = field(default_factory=lambda: II("dataset.batch_size"))
+    batch_size_valid: Optional[int] = field(default_factory=lambda: II("dataset.batch_size_valid"))
+    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = field(default_factory=lambda: II("dataset.dataset_impl"))
+    data_buffer_size: int = field(default_factory=lambda: II("dataset.data_buffer_size"))
+    tpu: bool = field(default_factory=lambda: II("common.tpu"))
+    use_plasma_view: bool = field(default_factory=lambda: II("common.use_plasma_view"))
+    plasma_path: str = field(default_factory=lambda: II("common.plasma_path"))
 
 
 @register_task("language_modeling", dataclass=LanguageModelingConfig)

@@ -20,7 +20,7 @@ class FairseqNAGConfig(FairseqDataclass):
     momentum: float = field(default=0.99, metadata={"help": "momentum factor"})
     weight_decay: float = field(default=0.0, metadata={"help": "weight decay"})
     # TODO common vars in parent class
-    lr: List[float] = II("optimization.lr")
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_optimizer("nag", dataclass=FairseqNAGConfig)

@@ -26,7 +26,7 @@ class StepLRScheduleConfig(FairseqDataclass):
         },
     )
     lr: List[float] = field(
-        default=II("optimization.lr"),
+        default_factory=lambda: II("optimization.lr"),
         metadata={"help": "max learning rate, must be more than cfg.min_lr"},
     )
     min_lr: float = field(default=0.0, metadata={"help": "min learning rate"})

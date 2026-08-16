@@ -9,7 +9,8 @@ import os
 import contextlib
 from dataclasses import dataclass, field
 from typing import Optional
-from omegaconf import MISSING, II, open_dict, OmegaConf
+from omegaconf import II,open_dict,OmegaConf
+MISSING = "???"
 
 import numpy as np
 from fairseq.data import (
@@ -80,9 +81,9 @@ class SentencePredictionConfig(FairseqDataclass):
         metadata={"help": "max tokens per example"},
     )
 
-    regression_target: bool = II("criterion.regression_target")
-    classification_head_name: str = II("criterion.classification_head_name")
-    seed: int = II("common.seed")
+    regression_target: bool = field(default_factory=lambda: II("criterion.regression_target"))
+    classification_head_name: str = field(default_factory=lambda: II("criterion.classification_head_name"))
+    seed: int = field(default_factory=lambda: II("common.seed"))
 
     d2v2_multi: bool = field(
         default=False,

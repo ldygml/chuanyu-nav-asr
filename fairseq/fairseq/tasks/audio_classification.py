@@ -15,7 +15,8 @@ from typing import Optional
 
 import numpy as np
 import torch
-from omegaconf import II, MISSING
+from omegaconf import II
+MISSING = "???"
 from sklearn import metrics as sklearn_metrics
 
 from fairseq.data import AddTargetDataset, Dictionary, FileAudioDataset

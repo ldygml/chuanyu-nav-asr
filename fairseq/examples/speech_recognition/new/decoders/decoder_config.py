@@ -9,7 +9,8 @@ from typing import Optional
 
 from fairseq.dataclass.configs import FairseqDataclass
 from fairseq.dataclass.constants import ChoiceEnum
-from omegaconf import MISSING
+MISSING = "???"
+MISSING = "???"
 
 
 DECODER_CHOICES = ChoiceEnum(["viterbi", "kenlm", "fairseqlm"])

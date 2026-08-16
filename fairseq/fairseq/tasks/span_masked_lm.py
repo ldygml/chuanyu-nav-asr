@@ -9,7 +9,8 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 import numpy as np
-from omegaconf import II, MISSING
+from omegaconf import II
+MISSING = "???"
 
 from fairseq import utils
 from fairseq.data import (
@@ -84,10 +85,8 @@ class SpanMaskedLMConfig(FairseqDataclass):
             'e.g., "train,valid" (default: all dataset splits)'
         },
     )
-    seed: int = II("common.seed")
-    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
-        "dataset.dataset_impl"
-    )
+    seed: int = field(default_factory=lambda: II("common.seed"))
+    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = field(default_factory=lambda: II("dataset.dataset_impl"))
     max_source_positions: int = field(
         default=1024, metadata={"help": "max number of tokens in the source sequence"}
     )

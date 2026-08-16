@@ -8,7 +8,8 @@ import os
 from dataclasses import dataclass, field
 
 import numpy as np
-from omegaconf import II, MISSING, OmegaConf
+from omegaconf import II,OmegaConf
+MISSING = "???"
 
 from fairseq import utils
 from fairseq.data import (
@@ -99,7 +100,7 @@ class MaskedLMConfig(FairseqDataclass):
             'e.g., "train,valid" (default: all dataset splits)'
         },
     )
-    seed: int = II("common.seed")
+    seed: int = field(default_factory=lambda: II("common.seed"))
 
     include_target_tokens: bool = field(
         default=False,

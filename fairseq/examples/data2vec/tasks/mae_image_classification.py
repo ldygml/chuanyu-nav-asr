@@ -11,7 +11,8 @@ import torch
 
 from typing import Optional
 from dataclasses import dataclass, field
-from omegaconf import MISSING
+MISSING = "???"
+MISSING = "???"
 
 from fairseq.dataclass import FairseqDataclass
 from fairseq.tasks import FairseqTask, register_task

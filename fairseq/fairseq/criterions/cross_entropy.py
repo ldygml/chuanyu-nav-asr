@@ -4,7 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import torch.nn.functional as F
 from fairseq import utils
@@ -16,7 +16,7 @@ from omegaconf import II
 
 @dataclass
 class CrossEntropyCriterionConfig(FairseqDataclass):
-    sentence_avg: bool = II("optimization.sentence_avg")
+    sentence_avg: bool = field(default_factory=lambda: II("optimization.sentence_avg"))
 
 
 @register_criterion("cross_entropy", dataclass=CrossEntropyCriterionConfig)

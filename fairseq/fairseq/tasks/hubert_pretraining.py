@@ -17,7 +17,8 @@ from fairseq.data import Dictionary, HubertDataset
 from fairseq.dataclass.configs import FairseqDataclass
 from fairseq.tasks import register_task
 from fairseq.tasks.fairseq_task import FairseqTask
-from omegaconf import MISSING
+MISSING = "???"
+MISSING = "???"
 
 logger = logging.getLogger(__name__)
 

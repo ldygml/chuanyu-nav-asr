@@ -4,7 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import torch.nn.functional as F
 from fairseq import utils
@@ -17,8 +17,8 @@ from omegaconf import II
 
 @dataclass
 class AdaptiveLossConfig(FairseqDataclass):
-    sentence_avg: bool = II("optimization.sentence_avg")
-    ddp_backend: DDP_BACKEND_CHOICES = II("distributed_training.ddp_backend")
+    sentence_avg: bool = field(default_factory=lambda: II("optimization.sentence_avg"))
+    ddp_backend: DDP_BACKEND_CHOICES = field(default_factory=lambda: II("distributed_training.ddp_backend"))
 
 
 @register_criterion("adaptive_loss", dataclass=AdaptiveLossConfig)

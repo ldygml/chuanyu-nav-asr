@@ -49,8 +49,8 @@ class MultilingualDenoisingConfig(DenoisingConfig):
             "help": "languages without spacing between words don't support whole word masking"
         },
     )
-    train_subset: str = II("common.train_subset")
-    valid_subset: str = II("common.valid_subset")
+    train_subset: str = field(default_factory=lambda: II("common.train_subset"))
+    valid_subset: str = field(default_factory=lambda: II("common.valid_subset"))
 
 
 @register_task("multilingual_denoising", dataclass=MultilingualDenoisingConfig)

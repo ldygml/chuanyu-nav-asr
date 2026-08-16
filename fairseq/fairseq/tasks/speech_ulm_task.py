@@ -16,7 +16,8 @@ from fairseq.data.codedataset import ExpressiveCodeDataConfig, CodeDataset
 from fairseq.dataclass.configs import FairseqDataclass
 from fairseq.tasks import register_task
 from fairseq.tasks.fairseq_task import FairseqTask
-from omegaconf import MISSING, DictConfig
+from omegaconf import DictConfig
+MISSING = "???"
 
 
 logger = logging.getLogger(__name__)

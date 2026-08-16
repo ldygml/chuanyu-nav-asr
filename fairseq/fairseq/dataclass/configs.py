@@ -9,7 +9,8 @@ from dataclasses import _MISSING_TYPE, dataclass, field
 from typing import Any, List, Optional
 
 import torch
-from omegaconf import II, MISSING
+from omegaconf import II
+MISSING = "???"
 
 from fairseq.dataclass.constants import (
     DATASET_IMPL_CHOICES,
@@ -435,9 +436,9 @@ class DistributedTrainingConfig(FairseqDataclass):
     zero_sharding: ZERO_SHARDING_CHOICES = field(
         default="none", metadata={"help": "ZeRO sharding"}
     )
-    fp16: bool = II("common.fp16")
-    memory_efficient_fp16: bool = II("common.memory_efficient_fp16")
-    tpu: bool = II("common.tpu")
+    fp16: bool = field(default_factory=lambda: II("common.fp16"))
+    memory_efficient_fp16: bool = field(default_factory=lambda: II("common.memory_efficient_fp16"))
+    tpu: bool = field(default_factory=lambda: II("common.tpu"))
     # configuration for --ddp-backend=fully_sharded
     no_reshard_after_forward: bool = field(
         default=False,
@@ -534,14 +535,14 @@ class DatasetConfig(FairseqDataclass):
         default=False, metadata={"help": "disable validation"}
     )
     max_tokens_valid: Optional[int] = field(
-        default=II("dataset.max_tokens"),
+        default_factory=lambda: II("dataset.max_tokens"),
         metadata={
             "help": "maximum number of tokens in a validation batch"
             " (defaults to --max-tokens)"
         },
     )
     batch_size_valid: Optional[int] = field(
-        default=II("dataset.batch_size"),
+        default_factory=lambda: II("dataset.batch_size"),
         metadata={
             "help": "batch size of the validation batch (defaults to --batch-size)",
             "argparse_alias": "--max-sentences-valid",
@@ -571,7 +572,7 @@ class DatasetConfig(FairseqDataclass):
         },
     )
     update_epoch_batch_itr: bool = field(
-        default=II("dataset.grouped_shuffling"),
+        default_factory=lambda: II("dataset.grouped_shuffling"),
         metadata={
             "help": "if true then prevents the reuse the epoch batch iterator by setting can_reuse_epoch_itr to false, defaults to --grouped-shuffling )",
         },
@@ -776,7 +777,7 @@ class CheckpointConfig(FairseqDataclass):
             "argparse_alias": "--save-async",
         },
     )
-    model_parallel_size: int = II("common.model_parallel_size")
+    model_parallel_size: int = field(default_factory=lambda: II("common.model_parallel_size"))
 
 
 @dataclass
@@ -803,7 +804,7 @@ class FairseqBMUFConfig(FairseqDataclass):
             "help": "Specify whether you want to average the local momentum after each sync"
         },
     )
-    distributed_world_size: int = II("distributed_training.distributed_world_size")
+    distributed_world_size: int = field(default_factory=lambda: II("distributed_training.distributed_world_size"))
 
 
 @dataclass
@@ -1126,16 +1127,16 @@ class EMAConfig(FairseqDataclass):
 
 @dataclass
 class FairseqConfig(FairseqDataclass):
-    common: CommonConfig = CommonConfig()
-    common_eval: CommonEvalConfig = CommonEvalConfig()
-    distributed_training: DistributedTrainingConfig = DistributedTrainingConfig()
-    dataset: DatasetConfig = DatasetConfig()
-    optimization: OptimizationConfig = OptimizationConfig()
-    checkpoint: CheckpointConfig = CheckpointConfig()
-    bmuf: FairseqBMUFConfig = FairseqBMUFConfig()
-    generation: GenerationConfig = GenerationConfig()
-    eval_lm: EvalLMConfig = EvalLMConfig()
-    interactive: InteractiveConfig = InteractiveConfig()
+    common: CommonConfig = field(default_factory=CommonConfig)
+    common_eval: CommonEvalConfig = field(default_factory=CommonEvalConfig)
+    distributed_training: DistributedTrainingConfig = field(default_factory=DistributedTrainingConfig)
+    dataset: DatasetConfig = field(default_factory=DatasetConfig)
+    optimization: OptimizationConfig = field(default_factory=OptimizationConfig)
+    checkpoint: CheckpointConfig = field(default_factory=CheckpointConfig)
+    bmuf: FairseqBMUFConfig = field(default_factory=FairseqBMUFConfig)
+    generation: GenerationConfig = field(default_factory=GenerationConfig)
+    eval_lm: EvalLMConfig = field(default_factory=EvalLMConfig)
+    interactive: InteractiveConfig = field(default_factory=InteractiveConfig)
     model: Any = MISSING
     task: Any = None
     criterion: Any = None
@@ -1144,4 +1145,4 @@ class FairseqConfig(FairseqDataclass):
     scoring: Any = None
     bpe: Any = None
     tokenizer: Any = None
-    ema: EMAConfig = EMAConfig()
+    ema: EMAConfig = field(default_factory=EMAConfig)

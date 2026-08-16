@@ -14,7 +14,8 @@ from argparse import Namespace
 from dataclasses import dataclass, field
 from typing import Optional, OrderedDict
 from fairseq.data.multi_corpus_dataset import MultiCorpusDataset
-from omegaconf import MISSING, II, OmegaConf
+from omegaconf import II,OmegaConf
+MISSING = "???"
 
 from ..data import BinarizedAudioDataset, FileAudioDataset
 from fairseq.data import SubsampleDataset
@@ -29,13 +30,13 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class SpecMaskingConfig:
-    feature_encoder_spec: str = II("model.modalities.audio.feature_encoder_spec")
-    mask_prob: float = II("model.modalities.audio.mask_prob")
-    mask_prob_adjust: float = II("model.modalities.audio.mask_prob_adjust")
-    mask_length: int = II("model.modalities.audio.mask_length")
-    inverse_mask: bool = II("model.modalities.audio.inverse_mask")
-    mask_dropout: float = II("model.modalities.audio.mask_dropout")
-    clone_batch: int = II("model.clone_batch")
+    feature_encoder_spec: str = field(default_factory=lambda: II("model.modalities.audio.feature_encoder_spec"))
+    mask_prob: float = field(default_factory=lambda: II("model.modalities.audio.mask_prob"))
+    mask_prob_adjust: float = field(default_factory=lambda: II("model.modalities.audio.mask_prob_adjust"))
+    mask_length: int = field(default_factory=lambda: II("model.modalities.audio.mask_length"))
+    inverse_mask: bool = field(default_factory=lambda: II("model.modalities.audio.inverse_mask"))
+    mask_dropout: float = field(default_factory=lambda: II("model.modalities.audio.mask_dropout"))
+    clone_batch: int = field(default_factory=lambda: II("model.clone_batch"))
     expand_adjacent: bool = False
     non_overlapping: bool = False
 
@@ -83,7 +84,7 @@ class SpecPretrainingConfig(FairseqDataclass):
         default=0,
         metadata={"help": "number of buckets"},
     )
-    tpu: bool = II("common.tpu")
+    tpu: bool = field(default_factory=lambda: II("common.tpu"))
     text_compression_level: ChoiceEnum([x.name for x in TextCompressionLevel]) = field(
         default="none",
         metadata={
@@ -99,7 +100,7 @@ class SpecPretrainingConfig(FairseqDataclass):
     persistent_workers: bool = True
 
     subsample: float = 1
-    seed: int = II("common.seed")
+    seed: int = field(default_factory=lambda: II("common.seed"))
 
 
 @register_task("spec_pretraining", dataclass=SpecPretrainingConfig)

@@ -223,11 +223,9 @@ class TranslationConfig(FairseqDataclass):
             "N buckets and pad accordingly; this is useful on TPUs to minimize the number of compilations"
         },
     )
-    train_subset: str = II("dataset.train_subset")
-    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
-        "dataset.dataset_impl"
-    )
-    required_seq_len_multiple: int = II("dataset.required_seq_len_multiple")
+    train_subset: str = field(default_factory=lambda: II("dataset.train_subset"))
+    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = field(default_factory=lambda: II("dataset.dataset_impl"))
+    required_seq_len_multiple: int = field(default_factory=lambda: II("dataset.required_seq_len_multiple"))
 
     # options for reporting BLEU during validation
     eval_bleu: bool = field(

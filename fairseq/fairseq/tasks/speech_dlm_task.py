@@ -126,12 +126,10 @@ class SpeechDLMConfig(FairseqDataclass):
         },
     )
     # TODO common vars below add to parent
-    seed: int = II("common.seed")
-    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
-        "dataset.dataset_impl"
-    )
-    data_buffer_size: int = II("dataset.data_buffer_size")
-    tpu: bool = II("common.tpu")
+    seed: int = field(default_factory=lambda: II("common.seed"))
+    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = field(default_factory=lambda: II("dataset.dataset_impl"))
+    data_buffer_size: int = field(default_factory=lambda: II("dataset.data_buffer_size"))
+    tpu: bool = field(default_factory=lambda: II("common.tpu"))
 
 
 @register_task("speech_dlm_task", dataclass=SpeechDLMConfig)

@@ -1,24 +1,29 @@
-# CCF IVC 2026 川渝方言导航语音识别 — 推理环境依赖（与服务器 chuanyu-ASR 环境一致）
-# Python 3.8 | CUDA 11.7 | 安装方式见 README「环境安装」
+# CCF IVC 2026 川渝方言导航语音识别 — 推理环境依赖
+# 支持两种环境（依赖均按 Python 版本自动解析）：
+#   A. Python 3.8 + CUDA 11.7（README 钉死路线，旧服务器同款）
+#   B. Python 3.10+ + torch 2.x（新机器/新驱动，torch 用机器自带或官方轮子）
+# 安装方式见 README「环境安装」
 
-# ---- PyTorch（CUDA 11.7 预编译轮子） ----
-# pip install torch==1.13.0+cu117 torchaudio==0.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
+# ---- PyTorch（按机器环境二选一，不要用 pip -r 装 torch） ----
+# 路线 A: pip install torch==1.13.0+cu117 torchaudio==0.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
+# 路线 B: pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121  （或使用机器预装 torch）
 
-# ---- 核心依赖（版本与服务器 pip freeze 一致） ----
-numpy==1.24.4
+# ---- 核心依赖 ----
+numpy>=1.24.4,<2
 kaldiio==2.18.1
 timm==1.0.28
 soundfile==0.13.1
 editdistance==0.8.1
 sentencepiece==0.2.0
-hydra-core==1.0.7
-omegaconf==2.0.6
+hydra-core>=1.3,<1.4
+omegaconf>=2.2,<2.4
+bitarray
 PyYAML==6.0.3
-scipy==1.10.1
-scikit-learn==1.3.2
+scipy>=1.10.1,<2
+scikit-learn>=1.3.2
 regex==2024.11.6
 sacrebleu==2.5.1
-Cython==0.29.37
+Cython>=0.29.37
 ninja==1.13.0
 pillow==10.4.0
 tqdm==4.68.4

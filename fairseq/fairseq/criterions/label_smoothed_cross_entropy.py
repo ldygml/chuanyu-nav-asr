@@ -28,7 +28,7 @@ class LabelSmoothedCrossEntropyCriterionConfig(FairseqDataclass):
         default=0,
         metadata={"help": "Ignore first N tokens"},
     )
-    sentence_avg: bool = II("optimization.sentence_avg")
+    sentence_avg: bool = field(default_factory=lambda: II("optimization.sentence_avg"))
 
 
 def label_smoothed_nll_loss(lprobs, target, epsilon, ignore_index=None, reduce=True):

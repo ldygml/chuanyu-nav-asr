@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class OptimizerAndSchedulerConfig(FairseqDataclass):
     optimizer: Any = None
     lr_scheduler: Optional[Any] = None
-    lr: List = II("optimization.lr")
+    lr: List = field(default_factory=lambda: II("optimization.lr"))
     lr_float: Optional[
         float
     ] = None  # this makes it easier to sweep on learning rate with auto sweepers

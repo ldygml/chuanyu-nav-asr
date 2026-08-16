@@ -43,8 +43,8 @@ class TriStageLRScheduleConfig(FairseqDataclass):
         default=0.01,
         metadata={"help": "final learning rate scale"},
     )
-    max_update: float = II("optimization.max_update")
-    lr: List[float] = II("optimization.lr")
+    max_update: float = field(default_factory=lambda: II("optimization.max_update"))
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_lr_scheduler("tri_stage", dataclass=TriStageLRScheduleConfig)

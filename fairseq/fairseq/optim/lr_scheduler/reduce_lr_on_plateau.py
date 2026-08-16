@@ -46,10 +46,8 @@ class ReduceLROnPlateauLRScheduleConfig(FairseqDataclass):
             "help": "initial learning rate during warmup phase; default is cfg.lr"
         },
     )
-    lr: List[float] = II("optimization.lr")
-    maximize_best_checkpoint_metric: bool = II(
-        "checkpoint.maximize_best_checkpoint_metric"
-    )
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
+    maximize_best_checkpoint_metric: bool = field(default_factory=lambda: II("checkpoint.maximize_best_checkpoint_metric"))
 
 
 @register_lr_scheduler(

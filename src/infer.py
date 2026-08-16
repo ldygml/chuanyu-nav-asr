@@ -12,7 +12,7 @@ import shutil
 import sys
 import re
 import types
-from dataclasses import dataclass, field, is_dataclass
+from dataclasses import MISSING as _DATACLASS_MISSING, dataclass, field, is_dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -46,7 +46,7 @@ logging.root.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-config_path = Path(__file__).resolve().parent / "config"
+config_path = str(Path(__file__).resolve().parent / "config")
 
 
 @dataclass
@@ -66,12 +66,12 @@ class DecodingConfig(DecoderConfig, FlashlightDecoderConfig):
 @dataclass
 class InferConfig(FairseqDataclass):
     task: Any = None
-    decoding: DecodingConfig = DecodingConfig()
-    common: CommonConfig = CommonConfig()
-    common_eval: CommonEvalConfig = CommonEvalConfig()
-    checkpoint: CheckpointConfig = CheckpointConfig()
-    distributed_training: DistributedTrainingConfig = DistributedTrainingConfig()
-    dataset: DatasetConfig = DatasetConfig()
+    decoding: DecodingConfig = field(default_factory=DecodingConfig)
+    common: CommonConfig = field(default_factory=CommonConfig)
+    common_eval: CommonEvalConfig = field(default_factory=CommonEvalConfig)
+    checkpoint: CheckpointConfig = field(default_factory=CheckpointConfig)
+    distributed_training: DistributedTrainingConfig = field(default_factory=DistributedTrainingConfig)
+    dataset: DatasetConfig = field(default_factory=DatasetConfig)
     is_ax: bool = field(
         default=False,
         metadata={
@@ -485,9 +485,9 @@ def cli_main() -> None:
 
         cfg_name = get_args().config_name or "infer"
         config = get_args()
-        user_dir_override = next((item for item in config.overrides if item.startswith("common.user_dir")), None)
+        user_dir_override = next((item for item in config.overrides if item.startswith("common.user_dir") or item.startswith("+common.user_dir")), None)
         if user_dir_override:
-            user_dir = re.sub(r"common.user_dir=", "", user_dir_override)
+            user_dir = re.sub(r"^\+?common.user_dir=", "", user_dir_override)
             logger.info(f"import user_dir: {user_dir}")
             args = types.SimpleNamespace()
             args.user_dir = user_dir
@@ -503,13 +503,36 @@ def cli_main() -> None:
         cfg_name = "infer"
         raise ImportError
 
-    cs = ConfigStore.instance()
-    cs.store(name=cfg_name, node=InferConfig)
+    # hydra>=1.2 / omegaconf>=2.2: ConfigStore.load() 对存储节点做 deepcopy，
+    # 会静默丢弃 MISSING（"???"）字段（如 task.data），导致 task.data=... 覆盖报
+    # "Key not in struct"。这里在 deepcopy 后把缺失字段恢复成 "???"。
+    import copy as _copy
 
-    for k in InferConfig.__dataclass_fields__:
-        if is_dataclass(InferConfig.__dataclass_fields__[k].type):
-            v = InferConfig.__dataclass_fields__[k].default
-            cs.store(name=k, node=v)
+    from omegaconf import OmegaConf as _OmegaConf
+
+    _cs = ConfigStore.instance()
+    if hasattr(_cs, "load") and hasattr(_cs, "_load") and not getattr(_cs, "_nav_missing_patched", False):
+        _cs._nav_missing_patched = True
+        _orig_load = _cs.load
+
+        def _load_keep_missing(config_path):
+            ret = _orig_load(config_path)
+            src = _cs._load(config_path).node
+            dst = ret.node
+
+            def _walk(s, d):
+                if not hasattr(s, "keys") or not hasattr(d, "keys"):
+                    return
+                for k in list(s.keys()):
+                    if hasattr(s[k], "keys"):
+                        _walk(s[k], d[k])
+                    elif _OmegaConf.is_missing(s, k) and k not in d:
+                        d[k] = "???"
+
+            _walk(src, dst)
+            return ret
+
+        _cs.load = _load_keep_missing
 
     hydra_main()  # pylint: disable=no-value-for-parameter
 

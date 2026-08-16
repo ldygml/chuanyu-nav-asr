@@ -11,7 +11,8 @@ import os.path as osp
 
 from dataclasses import dataclass, field
 from typing import List
-from omegaconf import MISSING
+MISSING = "???"
+MISSING = "???"
 
 import torch
 from torchvision import transforms

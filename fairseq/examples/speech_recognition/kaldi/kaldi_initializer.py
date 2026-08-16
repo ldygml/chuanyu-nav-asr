@@ -9,7 +9,8 @@ from dataclasses import dataclass
 import hydra
 from hydra.core.config_store import ConfigStore
 import logging
-from omegaconf import MISSING, OmegaConf
+from omegaconf import OmegaConf
+MISSING = "???"
 import os
 import os.path as osp
 from pathlib import Path

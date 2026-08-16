@@ -37,8 +37,8 @@ class FairseqAdamConfig(FairseqDataclass):
         default=False, metadata={"help": "use FP16 stats (with automatic scaling)"}
     )
     # TODO common vars below in parent
-    tpu: bool = II("common.tpu")
-    lr: List[float] = II("optimization.lr")
+    tpu: bool = field(default_factory=lambda: II("common.tpu"))
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_optimizer("adam", dataclass=FairseqAdamConfig)

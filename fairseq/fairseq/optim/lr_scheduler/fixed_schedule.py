@@ -25,7 +25,7 @@ class FixedLRScheduleConfig(FairseqDataclass):
         default=0,
         metadata={"help": "warmup the learning rate linearly for the first N updates"},
     )
-    lr: List[float] = II("optimization.lr")
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_lr_scheduler("fixed", dataclass=FixedLRScheduleConfig)

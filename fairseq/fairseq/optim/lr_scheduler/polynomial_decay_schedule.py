@@ -30,10 +30,10 @@ class PolynomialDecayLRScheduleConfig(FairseqDataclass):
         metadata={"help": "decay exponent"},
     )
     total_num_update: float = field(
-        default=II("optimization.max_update"),
+        default_factory=lambda: II("optimization.max_update"),
         metadata={"help": "total number of updates over which to decay learning rate"},
     )
-    lr: List[float] = II("optimization.lr")
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_lr_scheduler("polynomial_decay", dataclass=PolynomialDecayLRScheduleConfig)

@@ -28,7 +28,7 @@ class TriangularLRScheduleConfig(FairseqDataclass):
     shrink_min: bool = field(
         default=False, metadata={"help": "if set, also shrinks min lr"}
     )
-    lr: List[float] = II("optimization.lr")
+    lr: List[float] = field(default_factory=lambda: II("optimization.lr"))
 
 
 @register_lr_scheduler("triangular", dataclass=TriangularLRScheduleConfig)

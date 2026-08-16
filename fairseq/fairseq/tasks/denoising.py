@@ -9,7 +9,8 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 import numpy as np
-from omegaconf import II, MISSING
+from omegaconf import II
+MISSING = "???"
 
 from fairseq import utils
 from fairseq.data import (
@@ -108,7 +109,7 @@ class DenoisingConfig(FairseqDataclass):
             "help": "when masking N tokens, replace with 0, 1, or N tokens (use -1 for N)"
         },
     )
-    seed: int = II("common.seed")
+    seed: int = field(default_factory=lambda: II("common.seed"))
     shorten_method: SHORTEN_METHOD_CHOICES = field(
         default="none",
         metadata={
@@ -130,9 +131,7 @@ class DenoisingConfig(FairseqDataclass):
         default=1024,
         metadata={"help": "max number of tokens in the target sequence"},
     )
-    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
-        "dataset.dataset_impl"
-    )
+    dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = field(default_factory=lambda: II("dataset.dataset_impl"))
 
 
 @register_task("denoising", dataclass=DenoisingConfig)

@@ -16,15 +16,15 @@ from omegaconf import II
 
 @dataclass
 class SpeechUnitLmCriterionConfig(FairseqDataclass):
-    sentence_avg: bool = II("optimization.sentence_avg")
+    sentence_avg: bool = field(default_factory=lambda: II("optimization.sentence_avg"))
     loss_weights: str = field(
         default="1.;0.0;0.0",
         metadata={
             "help": "Weights of the losses that correspond to token, duration, and F0 streams"
         },
     )
-    discrete_duration: bool = II("task.discrete_duration")
-    discrete_f0: bool = II("task.discrete_f0")
+    discrete_duration: bool = field(default_factory=lambda: II("task.discrete_duration"))
+    discrete_f0: bool = field(default_factory=lambda: II("task.discrete_f0"))
 
 
 def mae_loss(pred, targ, mask, reduce=True):
