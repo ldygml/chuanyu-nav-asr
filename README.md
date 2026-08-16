@@ -8,6 +8,20 @@
 - **环境**：Linux x86_64 · Python 3.8 · CUDA 11.7
 - **开箱即用**：一条命令完成语音转文字，自动重采样、自动热词修正
 
+> **TeleSpeech Inside**
+>
+> 本项目是基于 [TeleSpeech 模型](https://github.com/Tele-AI/TeleSpeech-ASR)（Data2Vec 2.0 方言 ASR）二次开发的模型衍生品：
+> [src/](src/) 派生自其 `data2vec_dialect`，模型权重 nav80k_cont 为对
+> TeleSpeech-ASR1.0-large-kespeech 微调续训的产物。
+>
+> **主要修改**：MFCC 提取改为纯 Python 三件套（prepare_manifest_data.py）、增加输出组装
+> （make_predictions.py）、捆绑 fairseq 0.12.2 使仓库自足、增加热词后处理与一键转写入口
+> （transcribe.sh）。
+>
+> 使用本项目须遵守《TeleSpeech 模型社区许可协议》：
+> **仅限非商业用途**；商用须事先向许可方（tele_ai@chinatelecom.cn）登记并获书面授权。
+> 协议副本见 [third_party_licenses/LICENSE_TeleSpeech.pdf](third_party_licenses/LICENSE_TeleSpeech.pdf)。
+
 ---
 
 ## 快速开始

@@ -8,6 +8,7 @@
 
 | 软件 | 版本 | 许可证 | 来源 | 用途 |
 |------|------|------|------|------|
+| TeleSpeech-ASR | 1.0-large-kespeech | TeleSpeech 模型社区许可协议（见 LICENSE_TeleSpeech.pdf） | https://github.com/Tele-AI/TeleSpeech-ASR | 基座模型；本项目 src/ 派生自其 data2vec_dialect |
 | fairseq | 0.12.2 | MIT | https://github.com/facebookresearch/fairseq | 训练/推理框架 |
 | wenet | —（参考实现） | Apache-2.0 | https://github.com/wenet-e2e/wenet | 训练基线参考（未打包进推理代码） |
 
@@ -40,6 +41,7 @@
 
 | 资源 | 许可证 | 说明 |
 |------|------|------|
-| TeleSpeech-ASR1.0-large-kespeech | TeleSpeech 模型社区许可协议 | 基座模型（允许商用） |
+| TeleSpeech-ASR1.0-large-kespeech | TeleSpeech 模型社区许可协议（LICENSE_TeleSpeech.pdf） | 基座模型（仅限非商业使用；商用需向许可方登记并获书面授权） |
+| nav80k_cont（本项目模型权重） | TeleSpeech 模型社区许可协议（同上） | 对 TeleSpeech-ASR1.0-large-kespeech 微调续训的模型衍生品，受同一协议约束 |
 | KeSpeech phase1 子集 | 开源 | 通用预训练数据 |
 | SoX 14.4 | LGPL | 离线数据增强 |

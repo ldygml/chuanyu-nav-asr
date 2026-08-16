@@ -11,6 +11,7 @@ Sichuan Dialect Scripted Speech Corpus.zip
 weights/
 *.zip
 *.tar.gz
+!third_party_licenses/LICENSE_TeleSpeech.pdf
 *.pdf
 *.wav
 *.ark
