@@ -11,7 +11,7 @@
 #   --device <DEV>    推理设备，默认 cuda:0（仅支持 cuda:N）
 #
 # 环境变量（可选覆盖）:
-#   NAV_ASR_CKPT      模型 checkpoint 路径（默认 weights/model.pt 或服务器路径）
+#   NAV_ASR_CKPT      模型 checkpoint 路径（默认 weights/model.pt）
 #   NAV_ASR_PYTHON    Python 解释器（默认取 conda chuanyu-ASR 或系统 python3）
 # ============================================================
 set -euo pipefail
@@ -59,20 +59,15 @@ for w in "${WAVS[@]}"; do
     printf '{"id": "%s", "audio_path": "%s"}\n' "$id" "$(realpath "$w")" >> "$MANIFEST"
 done
 
-# ---- 路径解析（仓库布局优先，服务器部署回退） ----
+# ---- 路径解析 ----
 SUBMISSION="$SCRIPT_DIR"
-if [[ ! -d "$SUBMISSION/src" ]]; then
-    SUBMISSION=/root/asr-competition/submission   # 服务器旧布局
-fi
 
 if [[ -n "${NAV_ASR_CKPT:-}" ]]; then
     CKPT="$NAV_ASR_CKPT"
 elif [[ -f "$SCRIPT_DIR/weights/model.pt" ]]; then
     CKPT="$SCRIPT_DIR/weights/model.pt"
-elif [[ -f /Save/checkpoints_nav80k_cont/checkpoint_best.pt ]]; then
-    CKPT=/Save/checkpoints_nav80k_cont/checkpoint_best.pt
 else
-    echo "[ERROR] 找不到模型权重：请下载 nav80k_cont 到 weights/model.pt 或设置 NAV_ASR_CKPT"
+    echo "[ERROR] 找不到模型权重：请下载到 weights/model.pt 或设置 NAV_ASR_CKPT"
     exit 1
 fi
 
@@ -85,9 +80,7 @@ else
 fi
 
 HOTWORD_FIX="$SCRIPT_DIR/hotword_fix.py"
-HOTWORD_DICT="${HOTWORD_DICT:-$SCRIPT_DIR/词典/hotword_dict_final.md}"
-[[ -f "$HOTWORD_FIX" ]] || HOTWORD_FIX=/tmp/hotword_fix.py
-[[ -f "$HOTWORD_DICT" ]] || HOTWORD_DICT=/tmp/hotword_dict_final.md
+HOTWORD_DICT="${HOTWORD_DICT:-$SCRIPT_DIR/hotword/hotword_dict_final.md}"
 
 # 字符词典目录（含 dict.chr7531.txt）
 DICT_DIR="$SCRIPT_DIR/weights"
@@ -122,7 +115,7 @@ FINAL="$WORK/asr_raw.jsonl"
 if [[ $NO_HOTWORD -eq 0 ]]; then
     if [[ ! -f "$HOTWORD_FIX" || ! -f "$HOTWORD_DICT" ]]; then
         echo "[ERROR] 热词件缺失: $HOTWORD_FIX / $HOTWORD_DICT"
-        echo "        （服务器重启 /tmp 会丢；重传后再跑，或用 --no-hotword 跳过）"
+        echo "        （补齐后重跑，或用 --no-hotword 跳过）"
         exit 1
     fi
     HOTWORD_DICT="$HOTWORD_DICT" "$PYTHON_BIN" -X utf8 "$HOTWORD_FIX" "$WORK/asr_raw.jsonl" "$WORK/final.jsonl"

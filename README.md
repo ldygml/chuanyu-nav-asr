@@ -74,7 +74,7 @@ audio_001	前方五百米左转进入天府大道
 |---|---|---|
 | `NAV_ASR_CKPT` | 模型 checkpoint 路径 | `weights/model.pt` |
 | `NAV_ASR_PYTHON` | Python 解释器 | 自动探测（conda chuanyu-ASR 或系统 python3） |
-| `HOTWORD_DICT` | 热词词典路径 | `词典/hotword_dict_final.md` |
+| `HOTWORD_DICT` | 热词词典路径 | `hotword/hotword_dict_final.md` |
 
 ### 底层推理流程
 
@@ -89,11 +89,11 @@ wav → prepare_manifest_data.py（重采样 → 40 维 MFCC）
 
 ## 热词后处理
 
-纯字典替换方案，词典 `词典/hotword_dict_final.md`（**1981 对**），格式为每行 `错误词 正确词`（空格分隔，`#` 开头为注释）。
+纯字典替换方案，词典 `hotword/hotword_dict_final.md`（**1981 对**），格式为每行 `错误词 正确词`（空格分隔，`#` 开头为注释）。
 
 - 按错词长度降序替换 + 子串防护 + 手动例外（REVERT_SET / PREV_EXCEPT），误伤率低
 - **自定义词典**：直接编辑词典文件，或 `export HOTWORD_DICT=/path/to/your_dict.md` 后运行 transcribe.sh
-- 算法细节与质量验证见 [PIPELINE说明.md](PIPELINE说明.md) 第 4 节
+- 算法细节与质量验证见 [PIPELINE.md](PIPELINE.md) 第 4 节
 
 ---
 
@@ -112,7 +112,7 @@ A 榜首测            6.69%     dev 与 A 榜分布差异 ~5.5pp
 nav80k 续训        6.68%     原参数续训 20k（A 榜 CER，两次推理逐字复现）
 ```
 
-- 训练脚本见 `scripts/`（含 `nav80k_cont续训.sh`）；详细说明见 [PIPELINE说明.md](PIPELINE说明.md) 第 2 节
+- 训练脚本见 `scripts/`（含 `train_nav80k_cont.sh`）；详细说明见 [PIPELINE.md](PIPELINE.md) 第 2 节
 - 失败的探索（勿复现）：navmix（混合通用数据续训）、nav_specaug（加噪 + SpecAugment）、FastCorrect 纠错模型微调
 
 > 训练数据（比赛官方数据集 + 自制增强集）受比赛数据协议约束，未随仓库发布。
@@ -124,13 +124,13 @@ nav80k 续训        6.68%     原参数续训 20k（A 榜 CER，两次推理逐
 ```
 ├── transcribe.sh          # 通用转写工具（唯一使用入口）
 ├── hotword_fix.py         # 热词后处理（纯字典替换）
-├── 词典/                  # 热词词典（hotword_dict_final.md，1981 对）
+├── hotword/               # 热词词典（hotword_dict_final.md，1981 对）
 ├── src/                   # ASR 代码（data2vec_dialect 三件套 + 任务定义）
 ├── fairseq/               # 依赖的 fairseq 0.12.2 源码
 ├── scripts/               # 训练/数据处理脚本
 ├── dict.chr7531.txt       # 字符词典（7531 字）
 ├── requirements.txt       # Python 依赖清单
-├── PIPELINE说明.md        # 训练路线 / 推理流程 / 热词算法详解
+├── PIPELINE.md            # 训练路线 / 推理流程 / 热词算法详解
 └── submission.yaml        # 竞赛提交元数据（权重 SHA-256 等）
 ```
 

@@ -41,8 +41,7 @@ echo "[run.sh] work_dir=$WORK_DIR"
 
 # ---- 3. 定位 Python ----
 # 优先级: 环境变量 > conda chuanyu-ASR > 系统 conda > 系统 python3
-PYTHON_BIN="${PYTHON_BIN:-}"
-if [[ -z "$PYTHON_BIN" ]]; then
+if [[ -z "${PYTHON_BIN:-}" ]]; then
     # 优先使用 conda 环境（自带 pip + PyTorch）
     if [[ -x /opt/conda/envs/chuanyu-ASR/bin/python3 ]]; then
         PYTHON_BIN="/opt/conda/envs/chuanyu-ASR/bin/python3"

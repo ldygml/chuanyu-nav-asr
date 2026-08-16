@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hotword correction driven by the approved dictionary (词典/hotword_dict_final.md):
+"""Hotword correction driven by the approved dictionary (hotword/hotword_dict_final.md):
    replace EVERY occurrence of each 错->对 pair in the text, subject to the
    substring-damage guard (a lengthening replacement touching a hanzi neighbor
    is skipped at that occurrence). REVERT_SET pairs are skipped entirely.
@@ -7,15 +7,15 @@ Usage: python hotword_fix.py <in.jsonl> <out.jsonl>
 """
 import sys, json, re, os
 
-# 词典路径：环境变量 HOTWORD_DICT 优先；默认取脚本同级的 词典/hotword_dict_final.md
+# 词典路径：环境变量 HOTWORD_DICT 优先；默认取脚本同级的 hotword/hotword_dict_final.md
 DICT = os.environ.get('HOTWORD_DICT') or os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), '词典', 'hotword_dict_final.md')
+    os.path.dirname(os.path.abspath(__file__)), 'hotword', 'hotword_dict_final.md')
 
 # load pairs 错 -> 对
 pairs = []
 for l in open(DICT, encoding='utf-8'):
     p = l.strip().split()
-    if len(p) >= 2:
+    if len(p) >= 2 and not p[0].startswith('#'):
         pairs.append((p[0], p[1] if len(p) == 2 else ' '.join(p[1:])))
 # longest wrong-string first so nested pairs don't double-apply
 pairs_sorted = sorted((p for p in pairs if p[0] and p[1]), key=lambda p: -len(p[0]))

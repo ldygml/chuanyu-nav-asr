@@ -45,7 +45,7 @@ bash transcribe.sh --input <wav文件 或 目录> [--output out.jsonl] [--no-hot
 ```
 
 - 免写 manifest（id = 文件名）；stdout 打印 `id<TAB>text`
-- 热词修正默认开启（`词典/hotword_dict_final.md`），`--no-hotword` 跳过
+- 热词修正默认开启（`hotword/hotword_dict_final.md`），`--no-hotword` 跳过
 - 环境变量：`NAV_ASR_CKPT`（权重路径，默认 `weights/model.pt`）、`NAV_ASR_PYTHON`（解释器）、`HOTWORD_DICT`（词典路径）
 - 权重：Hugging Face `999ffgml/chuanyu-nav-asr`（`hf download 999ffgml/chuanyu-nav-asr --local-dir weights`）
 
@@ -62,7 +62,7 @@ bash transcribe.sh --input <wav文件 或 目录> [--output out.jsonl] [--no-hot
 
 ### 4.2 词典
 
-- 权威词典：`词典/hotword_dict_final.md`（**1981 对**，2026-08-16 合并去重版）
+- 权威词典：`hotword/hotword_dict_final.md`（**1981 对**，2026-08-16 合并去重版）
   - 来源：`川渝方言导航热词映射(1).md`（主表 + 已验证，新表优先）∪ `hotword_dict_merged.md`（历史词库）
   - 去重规则：同错词冲突以新表为准（6 处）；苏州高苏区仅保留"姑苏区"目标
 - 格式：每行 `错误词 正确词`（空格分隔），`#` 开头为注释
