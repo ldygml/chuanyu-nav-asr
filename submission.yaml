@@ -1,0 +1,81 @@
+# ============================================================
+# CCF IVC 2026 — 智能导航方言语音识别挑战赛
+# 决赛提交元数据
+# ============================================================
+
+team_id: LynRose_Enigma
+submission_version: v2.0
+entrypoint: run.sh
+model_name: Data2Vec2-ASR-Navigation-Dialect-nav80k-cont
+
+# ---- 模型权重 ----
+weights:
+  - path: weights/model.pt
+    sha256: fa8ce92c5e74cd5ff0eaf572d6b3c2174c49fe6beee5dd12469e8fb864e6a296
+    description: "Data2Vec 2.0 Large (0.3B)，nav80k 导航增强续训模型（checkpoints_nav80k_cont/checkpoint_best.pt，20k 步 LR=1e-06）"
+  - path: weights/dict.chr7531.txt
+    sha256: d52346b399815ce130ee363ab4a3777820d96d2659f8b69225c1705c161ec798
+    description: "Character dictionary (7531 Chinese characters)"
+
+precision: fp32
+
+# ---- 外部资源申报 ----
+external_resources:
+  - name: TeleSpeech-ASR1.0-large-kespeech
+    version: finetune_large_kespeech.pt
+    source: https://huggingface.co/Tele-AI/TeleSpeech-ASR1.0
+    license: TeleSpeech模型社区许可协议 (允许商业用途)
+    usage: finetune
+    description: "KeSpeech 8方言微调模型，作为本方案基座模型继续微调"
+
+  - name: KeSpeech
+    version: phase1
+    source: https://github.com/Tele-AI/TeleSpeech-ASR
+    license: 开源数据集
+    usage: pretrain
+    description: "仅抽取 phase1 成都话和重庆话构成 Chuan-Yu-dialects 用于通用方言模型训练（nav80k 路线未使用）"
+
+  - name: SichuanDialectNavigation-TrainingDataset
+    version: competition-official
+    source: 比赛官方提供
+    license: 比赛数据使用协议
+    usage: finetune
+    description: "比赛官方导航训练集 3,385 条 + SoX 速度扰动增强至 13,240 条（nav80k 训练数据）"
+
+  - name: SoX
+    version: "14.4"
+    source: https://sox.sourceforge.net
+    license: LGPL
+    usage: preprocess
+    description: "tempo 0.9x/1.1x 速度扰动数据增强"
+
+  - name: fairseq
+    version: 0.12.2
+    source: https://github.com/facebookresearch/fairseq
+    license: MIT
+    usage: framework
+    description: "训练与推理框架"
+
+# ---- 可复现性 ----
+reproducibility:
+  deterministic_inference: true
+  seed: 777
+  training_config: config/v2_dialect_asr/base_audio_finetune_140h.yaml
+  notes: >
+    nav80k 路线两段训练：
+    Stage 1 (nav80k): finetune_large_kespeech.pt → 80k steps（导航增强数据 nav_aug_train 13,240 条 + 通用数据 2,959 条）
+    Stage 2 (nav80k_cont): nav80k checkpoint_best.pt 续训 20k steps
+    LR=1e-06, FP32, max_tokens=50000, update_freq=1, 2026-08-12 完成
+    独立 dev 105 句验证：baseline CER 2.37%（初赛 A 榜 CER 6.68%）
+
+# ---- 推理性能 ----
+inference:
+  framework: PyTorch 2.6 + fairseq 0.12.2
+  input_format: WAV, 16kHz, 16-bit, 单声道
+  feature_type: 40-dim MFCC (torchaudio 在线提取)
+  decoder: CTC Viterbi (贪心解码)
+  language_model: 无外部 LM
+  postprocessing: 官方 normalize.py 文本规范化（仅保留汉字/英文字母/数字）
+  package_size: 归档包 ~4.3GB（<10GB 上限）；权重 3.8GB（<5GB 上限）
+  reproducibility: 固定 seed=777；两次独立推理结果 3,461/3,461 逐字一致
+  dependencies: wheels/ 目录包含所有 Python 依赖的 Linux x86_64 wheels（20 个包，~772MB），run.sh 自动离线安装
