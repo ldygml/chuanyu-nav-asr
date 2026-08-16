@@ -85,7 +85,7 @@ else
 fi
 
 HOTWORD_FIX="$SCRIPT_DIR/hotword_fix.py"
-HOTWORD_DICT="$SCRIPT_DIR/词典/hotword_dict_final.md"
+HOTWORD_DICT="${HOTWORD_DICT:-$SCRIPT_DIR/词典/hotword_dict_final.md}"
 [[ -f "$HOTWORD_FIX" ]] || HOTWORD_FIX=/tmp/hotword_fix.py
 [[ -f "$HOTWORD_DICT" ]] || HOTWORD_DICT=/tmp/hotword_dict_final.md
 

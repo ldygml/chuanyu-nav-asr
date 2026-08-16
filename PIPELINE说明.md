@@ -25,7 +25,7 @@ A 榜首测            6.69%     dev 与 A 榜分布差异 ~5.5pp
 nav80k 续训        6.68%     原参数续训 20k（A 榜 CER，两次推理逐字复现）
 ```
 
-- 训练命令见 `scripts/`（含 nav80k_cont 续训脚本）；数据增强流程见 `docs/自用数据集制作流程.md`
+- 训练命令见 `scripts/`（含 nav80k_cont 续训脚本）
 - 失败的探索（勿复现）：navmix（混合通用数据续训）、nav_specaug（加噪 + SpecAugment）、FastCorrect 纠错模型微调
 
 ## 3. 推理流程

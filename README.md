@@ -1,99 +1,105 @@
-# 川渝方言导航语音识别（CCF IVC 2026 赛项三）
+# chuanyu-nav-asr
 
-队伍 **LynRose_Enigma** 的参赛完整工程：基于 **Data2Vec 2.0 + CTC** 的川渝方言导航语音识别系统。
+川渝方言导航语音识别系统（CCF IVC 2026 智能导航方言语音识别挑战赛参赛项目，初赛第 14 名）。
 
-- **比赛**：CCF IVC 2026 智能导航方言语音识别挑战赛（川渝方言导航语音）
-- **成绩**：初赛第 14 名（A 榜纯模型基线 CER = 6.68%，热词后处理版提交）
-- **模型**：Data2Vec 2.0 编码器 + CTC，导航数据增强 + 多段续训（nav80k → nav80k_cont）
-- **仓库**：完整推理代码 + fairseq + 热词后处理 + 训练脚本 + 环境清单（权重在 Hugging Face）
+基于 **Data2Vec 2.0 + CTC**，输入任意导航语音 WAV，输出汉字文本。A 榜纯模型基线 CER = **6.68%**。
 
----
-
-## 目录结构
-
-```
-├── transcribe.sh          # ★通用转写工具：wav/目录 → 文字，一条命令
-├── hotword_fix.py         # 热词后处理（纯字典替换，1981 对词典）
-├── 词典/                  # 热词词典（hotword_dict_final.md，合并去重版）
-├── src/                   # ASR 代码（data2vec_dialect：模型/任务/推理三件套）
-├── fairseq/               # fairseq 源码（本项目依赖的版本）
-├── scripts/               # 训练/推理脚本（含 nav80k_cont 续训命令）
-├── docs/                  # 方案文档、环境配置文档、数据集制作流程等
-├── dict.chr7531.txt       # 字符词典（7531 字）
-├── requirements.txt       # 环境依赖清单（与训练服务器一致）
-└── PIPELINE说明.md        # 完整 pipeline 说明（训练路线/推理流程/热词后处理）
-```
+- **模型**：nav80k_cont（约 3.8 GB），托管于 Hugging Face
+- **环境**：Linux x86_64 · Python 3.8 · CUDA 11.7
+- **开箱即用**：一条命令完成语音转文字，自动重采样、自动热词修正
 
 ---
 
-## 环境安装
+## 快速开始
 
-- 系统：Linux（x86_64），CUDA 11.7，Python 3.8
-- 参考命令：
+### 1. 安装环境
 
 ```bash
-# 1) conda 环境
 conda create -n chuanyu-ASR python=3.8 -y && conda activate chuanyu-ASR
 
-# 2) PyTorch（CUDA 11.7 预编译）
 pip install torch==1.13.0+cu117 torchaudio==0.13.0+cu117 torchvision==0.14.0+cu117 \
     --extra-index-url https://download.pytorch.org/whl/cu117
 
-# 3) 其余依赖
 pip install -r requirements.txt
 ```
 
-> 完全离线安装可选手动打包的 wheels（见比赛提交包，未入仓库）。
+> 国内网络 pip 可加 `-i https://pypi.tuna.tsinghua.edu.cn/simple`
 
-## 模型权重
-
-权重文件较大（约 3.8 GB），托管在 Hugging Face：[999ffgml/chuanyu-nav-asr](https://huggingface.co/999ffgml/chuanyu-nav-asr)
+### 2. 下载模型权重
 
 ```bash
-# 下载模型 + 词典到 weights/
 pip install huggingface_hub
+mkdir weights
 hf download 999ffgml/chuanyu-nav-asr --local-dir weights
 ```
 
-> 国内网络可先执行 `export HF_ENDPOINT=https://hf-mirror.com`（镜像加速）再下载。
+> 国内网络可先 `export HF_ENDPOINT=https://hf-mirror.com`（镜像加速）
+
+完成后应得到：
 
 ```
 weights/
-├── model.pt             # nav80k_cont checkpoint（最终提交模型）
-└── dict.chr7531.txt     # 字符词典
+├── model.pt             # nav80k_cont checkpoint（约 3.8 GB）
+└── dict.chr7531.txt     # 字符词典（7531 字）
 ```
 
----
-
-## 快速开始：语音转文字
+### 3. 转写语音
 
 ```bash
-# 单条音频
-bash transcribe.sh --input /path/to/audio.wav
-
-# 整个目录（*.wav）
-bash transcribe.sh --input /path/to/wav_dir --output result.jsonl
-
-# 跳过热词修正 / 指定 GPU
-bash transcribe.sh --input audio.wav --no-hotword --device cuda:1
+bash transcribe.sh --input 你的音频.wav
 ```
 
-- 输入：任意采样率、任意声道数的 WAV（自动重采样 16k 单声道）
-- 输出：stdout 打印 `id<TAB>文字`；`--output` 同时写 jsonl（`{"id","text"}`）
-- 热词修正默认开启（`词典/hotword_dict_final.md`，1981 对）；`--no-hotword` 跳过
-- 环境变量：`NAV_ASR_CKPT`（权重路径，默认 `weights/model.pt`）、`NAV_ASR_PYTHON`（解释器）
-
-### 底层推理三步（等价操作）
+stdout 打印 `id<TAB>文字`，例如：
 
 ```
-wav → prepare_manifest_data.py（40 维 MFCC + data.list）
-    → infer.py（hydra，viterbi greedy 解码）
-    → make_predictions.py（按 IDX 排序、去 <unk> → jsonl）
+audio_001	前方五百米左转进入天府大道
+```
+
+`--input` 传目录即可批量转写目录内所有 `*.wav`。
+
+---
+
+## transcribe.sh 用法
+
+| 参数 | 说明 |
+|---|---|
+| `--input <wav 或 目录>` | 必填。任意采样率/声道数的 WAV，自动重采样 16k 单声道 |
+| `--output <file.jsonl>` | 可选。同时写 `{"id","text"}` 格式结果文件 |
+| `--no-hotword` | 跳过热词修正（默认开启） |
+| `--device cuda:N` | 推理 GPU（默认 cuda:0） |
+
+环境变量覆盖：
+
+| 变量 | 作用 | 默认值 |
+|---|---|---|
+| `NAV_ASR_CKPT` | 模型 checkpoint 路径 | `weights/model.pt` |
+| `NAV_ASR_PYTHON` | Python 解释器 | 自动探测（conda chuanyu-ASR 或系统 python3） |
+| `HOTWORD_DICT` | 热词词典路径 | `词典/hotword_dict_final.md` |
+
+### 底层推理流程
+
+```
+wav → prepare_manifest_data.py（重采样 → 40 维 MFCC）
+    → infer.py（fairseq/hydra，viterbi greedy 解码）
+    → make_predictions.py（按 IDX 排序、去 <unk>）
+    → hotword_fix.py（可选，字典热词修正）
 ```
 
 ---
 
-## 训练复现（路线概述）
+## 热词后处理
+
+纯字典替换方案，词典 `词典/hotword_dict_final.md`（**1981 对**），格式为每行 `错误词 正确词`（空格分隔，`#` 开头为注释）。
+
+- 按错词长度降序替换 + 子串防护 + 手动例外（REVERT_SET / PREV_EXCEPT），误伤率低
+- **自定义词典**：直接编辑词典文件，或 `export HOTWORD_DICT=/path/to/your_dict.md` 后运行 transcribe.sh
+- 算法细节与质量验证见 [PIPELINE说明.md](PIPELINE说明.md) 第 4 节
+
+---
+
+## 训练复现
+
+训练路线（dev / A 榜 CER）：
 
 ```
 基线               30.70%    finetune_large_kespeech 无微调
@@ -101,23 +107,36 @@ wav → prepare_manifest_data.py（40 维 MFCC + data.list）
 纯导航数据          6.28%     导航数据 3,385 条，单段 40k
 SoX 速度扰动增强     4.93%     0.9x/1.1x ×4，13,240 条
 二段续训           1.88%     40k → 60k
-三段续训           1.10%     60k → 80k（独立 300 条测试）
+三段续训           1.10%     60k → 80k
 A 榜首测            6.69%     dev 与 A 榜分布差异 ~5.5pp
 nav80k 续训        6.68%     原参数续训 20k（A 榜 CER，两次推理逐字复现）
 ```
 
-- 核心三项技术：全模型微调 + 超低 LR 1e-06、SoX 速度扰动、多段续训（每段从最优 checkpoint 出发 + 重置 optimizer）
-- 训练命令见 `scripts/`（含 nav80k_cont 续训脚本）；数据增强见 `docs/自用数据集制作流程.md`
-- 失败的探索（勿复现）：混合通用数据续训（navmix）、加噪 + SpecAugment 翻倍（nav_specaug）、FastCorrect 纠错模型微调（FC，过拟合）
+- 训练脚本见 `scripts/`（含 `nav80k_cont续训.sh`）；详细说明见 [PIPELINE说明.md](PIPELINE说明.md) 第 2 节
+- 失败的探索（勿复现）：navmix（混合通用数据续训）、nav_specaug（加噪 + SpecAugment）、FastCorrect 纠错模型微调
 
-## 热词后处理
+> 训练数据（比赛官方数据集 + 自制增强集）受比赛数据协议约束，未随仓库发布。
 
-- 方案：**纯字典替换**（按错词长度降序 find 替换 + 子串防护 + REVERT_SET + 上下文例外），比音素模糊匹配（asr-hotword）可控得多
-- 词典来源：全部为测试集之外的外部地名/机构名资料与常识整理
-- 原理与迭代历程详见 `PIPELINE说明.md` 第 4 节
+---
+
+## 目录结构
+
+```
+├── transcribe.sh          # 通用转写工具（唯一使用入口）
+├── hotword_fix.py         # 热词后处理（纯字典替换）
+├── 词典/                  # 热词词典（hotword_dict_final.md，1981 对）
+├── src/                   # ASR 代码（data2vec_dialect 三件套 + 任务定义）
+├── fairseq/               # 依赖的 fairseq 0.12.2 源码
+├── scripts/               # 训练/数据处理脚本
+├── dict.chr7531.txt       # 字符词典（7531 字）
+├── requirements.txt       # Python 依赖清单
+├── PIPELINE说明.md        # 训练路线 / 推理流程 / 热词算法详解
+└── submission.yaml        # 竞赛提交元数据（权重 SHA-256 等）
+```
+
+---
 
 ## 致谢
 
 - 官方基线：TeleSpeech-ASR（Data2Vec 2.0 方言 ASR）
 - 预训练底座：KeSpeech 系列（large / finetune_large_kespeech）
-- 热词库早期原型：HaujetZhao/asr-hotword
