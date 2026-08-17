@@ -6,7 +6,9 @@
 
 # ---- PyTorch（按机器环境二选一，不要用 pip -r 装 torch） ----
 # 路线 A: pip install torch==1.13.0+cu117 torchaudio==0.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
-# 路线 B: pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121  （或使用机器预装 torch）
+# 路线 B: pip install torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cu121  （或使用机器预装 torch）
+# 注意：torchvision 必须与 torch 同批安装——timm 依赖未钉版本的 torchvision，
+# 单独 pip -r 会拉最新 torchvision 并连锁升级 torch，与已装 torchaudio 错位。
 
 # ---- 核心依赖 ----
 numpy>=1.24.4,<2

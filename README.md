@@ -46,10 +46,14 @@ pip install -r requirements.txt
 ```bash
 conda create -n chuanyu-ASR python=3.10 -y && conda activate chuanyu-ASR
 
-pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cu121
 
 pip install -r requirements.txt
 ```
+
+> torchvision 必须与 torch 一起装：requirements.txt 中 timm 依赖未钉版本的
+> torchvision，单独 `pip install -r` 会拉最新 torchvision 并连锁升级 torch，
+> 导致与已装 torchaudio 版本错位。
 
 两条路线最后都要编译 fairseq 的 Cython 扩展：
 

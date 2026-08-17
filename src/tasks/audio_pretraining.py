@@ -84,7 +84,7 @@ class SpecPretrainingConfig(FairseqDataclass):
         default=0,
         metadata={"help": "number of buckets"},
     )
-    tpu: bool = field(default_factory=lambda: II("common.tpu"))
+    tpu: bool = False
     text_compression_level: ChoiceEnum([x.name for x in TextCompressionLevel]) = field(
         default="none",
         metadata={
@@ -100,7 +100,7 @@ class SpecPretrainingConfig(FairseqDataclass):
     persistent_workers: bool = True
 
     subsample: float = 1
-    seed: int = field(default_factory=lambda: II("common.seed"))
+    seed: int = 1
 
 
 @register_task("spec_pretraining", dataclass=SpecPretrainingConfig)

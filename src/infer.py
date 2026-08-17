@@ -524,10 +524,11 @@ def cli_main() -> None:
                 if not hasattr(s, "keys") or not hasattr(d, "keys"):
                     return
                 for k in list(s.keys()):
-                    if hasattr(s[k], "keys"):
+                    if _OmegaConf.is_missing(s, k):
+                        if k not in d:
+                            d[k] = "???"
+                    elif hasattr(s[k], "keys"):
                         _walk(s[k], d[k])
-                    elif _OmegaConf.is_missing(s, k) and k not in d:
-                        d[k] = "???"
 
             _walk(src, dst)
             return ret

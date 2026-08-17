@@ -100,7 +100,7 @@ echo "[transcribe] === Step 1/3: MFCC 特征 ==="
 echo "[transcribe] === Step 2/3: ASR 推理 ==="
 "$PYTHON_BIN" -u "$SUBMISSION/src/infer.py" \
     --config-dir "$SUBMISSION/src/config" --config-name infer \
-    task=spec_finetuning "task.data=$WORK/data" task.normalize=false \
+    task=spec_finetuning "+task.data=$WORK/data" task.normalize=false \
     "common.user_dir=$SUBMISSION/src" "common_eval.path=$CKPT" \
     "common_eval.results_path=$WORK/results" common_eval.quiet=false \
     dataset.gen_subset=train "+task.target_dictionary=$DICT_DIR"
