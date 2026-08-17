@@ -58,3 +58,6 @@ build/
 /竞赛要求与赛题说明.md
 /预测审查报告.md
 *.bak2
+
+# 复现指南（仅本机，不入仓库）
+/REPRODUCTION.md
