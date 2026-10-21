@@ -11,6 +11,7 @@
 - 队伍：LynRose Enigma
 - 成绩：初赛第 14 名（A 榜纯模型 CER = 6.68%；热词后处理版 **6.00%**，为最终提交成绩）
 - 模型：Data2Vec 2.0 编码器 + CTC，checkpoint = nav80k_cont
+- 另发布通用域微调 checkpoint（仅通用方言数据、未做导航微调，12,276 步 / uer 6.164），见 [Hugging Face: chuanyu-nav-asr-generalfinetune](https://huggingface.co/999ffgml/chuanyu-nav-asr-generalfinetune)，用于对照或二次开发
 
 ## 2. 训练路线
 

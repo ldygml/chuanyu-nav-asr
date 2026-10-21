@@ -4,7 +4,7 @@
 
 基于 **Data2Vec 2.0 + CTC**，输入任意导航语音 WAV，输出汉字文本。A 榜纯模型基线 CER = **6.68%**。
 
-- **模型**：nav80k_cont（约 3.8 GB），托管于 Hugging Face
+- **模型**：nav80k_cont（约 3.8 GB），托管于 [Hugging Face](https://huggingface.co/999ffgml/chuanyu-nav-asr)；另有通用域微调版（未使用导航训练数据）[chuanyu-nav-asr-generalfinetune](https://huggingface.co/999ffgml/chuanyu-nav-asr-generalfinetune)
 - **环境**：Linux x86_64 · Python 3.8 · CUDA 11.7
 - **开箱即用**：一条命令完成语音转文字，自动重采样、自动热词修正
 
@@ -73,6 +73,12 @@ hf download 999ffgml/chuanyu-nav-asr --local-dir weights
 ```
 
 > 国内网络可先 `export HF_ENDPOINT=https://hf-mirror.com`（镜像加速）
+
+通用域微调版（仅通用方言数据、未做导航微调，用于对照或二次开发）：
+
+```bash
+hf download 999ffgml/chuanyu-nav-asr-generalfinetune --local-dir weights_general
+```
 
 完成后应得到：
 
