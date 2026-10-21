@@ -74,18 +74,18 @@ hf download 999ffgml/chuanyu-nav-asr --local-dir weights
 
 > 国内网络可先 `export HF_ENDPOINT=https://hf-mirror.com`（镜像加速）
 
-通用域微调版（仅通用方言数据、未做导航微调，用于对照或二次开发）：
-
-```bash
-hf download 999ffgml/chuanyu-nav-asr-generalfinetune --local-dir weights_general
-```
-
 完成后应得到：
 
 ```
 weights/
 ├── model.pt             # nav80k_cont checkpoint（约 3.8 GB）
 └── dict.chr7531.txt     # 字符词典（7531 字）
+```
+
+通用域微调版（仅通用方言数据、未做导航微调，用于对照或二次开发）：
+
+```bash
+hf download 999ffgml/chuanyu-nav-asr-generalfinetune --local-dir weights_general
 ```
 
 ### 3. 转写语音
